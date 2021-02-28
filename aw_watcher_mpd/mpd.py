@@ -57,7 +57,10 @@ class MPDWatcher:
         self.mpd.disconnect()
 
     def heartbeat_loop(self):
-        prev=""
+        prev={'title': ""}
+        oldstart=-1
+        offset=timedelta(seconds=0)
+        oldduration=0
         while True:
             try:
                 songdata = self.get_data()
@@ -65,15 +68,35 @@ class MPDWatcher:
                     logger.info("Waiting for song to start")
                     self.mpd.idle("player")
                     songdata = self.get_data()
+                    offset=timedelta(seconds=0)
                     continue
-                if prev != songdata['title']:
-                    logger.info(f"Now playing {songdata['title']} - {songdata['album']} - {songdata['artist']}")
-                    prev = songdata['title']
-                duration = self.get_duration()
+
                 now = datetime.now(timezone.utc)
+                duration = self.get_duration()
                 start = now - timedelta(seconds=duration)
 
-                self.ping(songdata, timestamp=start, duration=duration)
+                if oldstart == -1: oldstart = start
+
+                if prev['title'] != songdata['title']:
+                    logger.info(f"Now playing {songdata['title']} - {songdata['album']} - {songdata['artist']}")
+                    if prev['title'] != '':
+                        self.ping(prev, timestamp=oldstart, duration=oldduration)
+                    prev = songdata
+                    offset=timedelta(seconds=0)
+                    oldduration=0
+                    oldstart = start
+
+                new=(start - oldstart).total_seconds() > 5
+
+                if new:
+                    logger.info(f"Playback has been resumed")
+                    logger.info(f"Now playing {songdata['title']} - {songdata['album']} - {songdata['artist']}")
+                    offset=timedelta(seconds=oldduration)
+
+                oldstart = start
+                oldduration = duration
+
+                self.ping(songdata, timestamp= start + offset, duration=duration)
 
                 sleep(self.settings.poll_time)
             except KeyboardInterrupt:
