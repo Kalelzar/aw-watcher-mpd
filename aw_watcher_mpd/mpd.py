@@ -30,7 +30,7 @@ class MPDWatcher:
         self.watcher_name="aw-watcher-mpd"
         self.event_type = "media.music.activity"
 
-        configsect = self.watcher_name if not testing else f"{watcher-name}-testing"
+        configsect = self.watcher_name if not testing else f"{self.watcher_name}-testing"
         self.settings = Settings(watcher_config[configsect])
         self.client = ActivityWatchClient(self.watcher_name, testing=testing)
         self.bucket_name = "{}_{}".format(self.watcher_name,

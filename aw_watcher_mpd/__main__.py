@@ -7,7 +7,7 @@ def main() -> None:
     parser = argparse.ArgumentParser("A watcher for mpd to detect currently played song")
     parser.add_argument("-v", "--verbose", dest="verbose", action="store_true",
                     help="run with verbose logging")
-    parser.add_argument("--testing", action="store_true",
+    parser.add_argument("--testing", dest="testing", action="store_true",
                         help="run in testing mode")
     args = parser.parse_args()
 
