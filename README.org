@@ -1,0 +1,24 @@
+#+TITLE: aw-watcher-mpd
+#+DESCRIPTION: An ActivityWatch watcher for the Music Player Daemon
+
+Watches the currently playing song in MPD.
+* How to install
+
+Requires 'poetry'.
+
+You can install 'poetry' via pip: ~pip install poetry~
+
+To package your own package
+
+#+begin_src bash
+poetry build && pip install dist/aw_watcher_mpd-0.1.0-py3-none-any.whl
+#+end_src
+
+To install the latest version from github without cloning
+~pip install git+https://github.com/Kalelzar/aw-watcher-mpd.git~
+
+To install from a cloned version, cd into the directory and run ~poetry install~
+to install inside an virtualenv.
+If you want to install it system-wide it can be installed with ~pip install .~,
+but that has the issue that it might not get the exact version of the
+dependencies due to not reading the poetry.lock file.
