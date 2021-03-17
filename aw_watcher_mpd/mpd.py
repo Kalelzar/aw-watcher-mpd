@@ -122,10 +122,21 @@ class MPDWatcher:
         if state == "play":
             songid=status["songid"]
             song=self.mpd.playlistid(songid)[0]
+
+            artists = song["artist"]
+            albumartists = song["albumartist"]
+            performers = song["performer"]
+
+            if len(albumartists) == 0: albumartists = artists
+            if len(performers) == 0: performers = artists
+
+
             return {"title": song["title"],
-                    "artist": song["artist"],
+                    "artist": artists,
                     "album": song["album"],
                     "uri": song["file"],
                     "genre": song["genre"],
+                    "performer": performers,
+                    "albumartist": albumartists
                     }
         else: return {}
