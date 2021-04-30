@@ -123,19 +123,41 @@ class MPDWatcher:
             songid=status["songid"]
             song=self.mpd.playlistid(songid)[0]
 
-            artists = song["artist"]
-            albumartists = song["albumartist"]
-            performers = song["performer"]
+            try:
+                artists = song["artist"]
+            except KeyError:
+                artists=""
 
-            if len(albumartists) == 0: albumartists = artists
-            if len(performers) == 0: performers = artists
+            try:
+                albumartists = song["albumartist"]
+            except KeyError:
+                albumartists=artists
 
+            try:
+                performers = song["performer"]
+            except KeyError:
+                performers=artists
 
-            return {"title": song["title"],
+            try:
+                title = song["title"]
+            except KeyError:
+                title = ""
+
+            try:
+                album = song["album"]
+            except KeyError:
+                album = ""
+
+            try:
+                genre = song["genre"]
+            except KeyError:
+                genre = ""
+
+            return {"title": title,
                     "artist": artists,
-                    "album": song["album"],
+                    "album": album,
                     "uri": song["file"],
-                    "genre": song["genre"],
+                    "genre": genre,
                     "performer": performers,
                     "albumartist": albumartists
                     }
